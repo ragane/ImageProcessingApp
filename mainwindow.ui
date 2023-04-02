@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1300</width>
+    <height>680</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>11</y>
+      <width>621</width>
+      <height>911</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../__PRZENOSINY/ImageTun/gray-color-solid-background-1920x1080.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="ImageProcessingBox">
+    <property name="geometry">
+     <rect>
+      <x>644</x>
+      <y>11</y>
+      <width>631</width>
+      <height>899</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Image Processing</string>
+    </property>
+    <widget class="QOpenGLWidget" name="Histogram">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>310</y>
+       <width>611</width>
+       <height>301</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>611</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="BrightBluarLayout">
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="BrightnessBox">
+          <property name="title">
+           <string>Brightness</string>
+          </property>
+          <widget class="QSlider" name="BrightnessSlider">
+           <property name="geometry">
+            <rect>
+             <x>12</x>
+             <y>29</y>
+             <width>281</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="cursor">
+            <cursorShape>ClosedHandCursor</cursorShape>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="BlurationBox">
+          <property name="title">
+           <string>Bluration</string>
+          </property>
+          <widget class="QSlider" name="BlurationSlider">
+           <property name="geometry">
+            <rect>
+             <x>12</x>
+             <y>29</y>
+             <width>281</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="cursor">
+            <cursorShape>ClosedHandCursor</cursorShape>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <layout class="QGridLayout" name="GeoColorLayout">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="GeometricLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="GeometriLabel">
+            <property name="text">
+             <string>Geometric</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="GeometricBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="cursor">
+             <cursorShape>ClosedHandCursor</cursorShape>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <property name="currentText">
+             <string>Scalling</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>Scalling</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Translation</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Rotation</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Perspective transformation</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="1">
+         <layout class="QGridLayout" name="ColorLayout">
+          <item row="0" column="1">
+           <widget class="QComboBox" name="ColorBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="cursor">
+             <cursorShape>ClosedHandCursor</cursorShape>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <property name="currentText">
+             <string>cvtColor</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>cvtColor</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>inRange</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="ColorLabel">
+            <property name="text">
+             <string>Color</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>221</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Morphological Transformation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBox">
+        <property name="cursor">
+         <cursorShape>ClosedHandCursor</cursorShape>
+        </property>
+        <item>
+         <property name="text">
+          <string>Erosion</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Dilation</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Opening</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Closing</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>250</y>
+       <width>611</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="HistogramLabel">
+          <property name="text">
+           <string>Histogram of image</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="FileMenu">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1300</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_as"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="tearOffEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>help_icon.png</normaloff>help_icon.png</iconset>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>Save as...</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionColor">
+   <property name="text">
+    <string>Color</string>
+   </property>
+  </action>
+  <action name="actionBlur">
+   <property name="text">
+    <string>Blur</string>
+   </property>
+  </action>
+  <action name="actionBrightnes">
+   <property name="text">
+    <string>Brightnes</string>
+   </property>
+  </action>
+  <action name="actionThresholding">
+   <property name="text">
+    <string>Thresholding</string>
+   </property>
+  </action>
+  <action name="actionGeometric">
+   <property name="text">
+    <string>Geometric</string>
+   </property>
+  </action>
+  <action name="actionLaplacian">
+   <property name="text">
+    <string>Laplacian</string>
+   </property>
+  </action>
+  <action name="actionScharr">
+   <property name="text">
+    <string>Scharr</string>
+   </property>
+  </action>
+  <action name="actionSobel">
+   <property name="text">
+    <string>Sobel</string>
+   </property>
+  </action>
+  <action name="actionCanny">
+   <property name="text">
+    <string>Canny</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>BrightnessSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>label</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>625</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BlurationSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>label</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1013</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>622</x>
+     <y>76</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpen</sender>
+   <signal>changed()</signal>
+   <receiver>label</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>486</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSave</sender>
+   <signal>changed()</signal>
+   <receiver>label</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>486</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSave_as</sender>
+   <signal>changed()</signal>
+   <receiver>label</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>486</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
