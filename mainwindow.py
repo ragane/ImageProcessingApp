@@ -9,6 +9,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import cv2, imutils
+from Transcription import *
 
 
 class Ui_MainWindow(QtWidgets.QWidget):
@@ -28,7 +29,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.ImageProcessingBox.setGeometry(QtCore.QRect(644, 11, 626, 899))
         self.ImageProcessingBox.setObjectName("ImageProcessingBox")
         self.Histogram = QtWidgets.QOpenGLWidget(self.ImageProcessingBox)
-        self.Histogram.setGeometry(QtCore.QRect(20, 430, 1000, 700))
+        self.Histogram.setGeometry(QtCore.QRect(20, 460, 300, 200))
         self.Histogram.setObjectName("Histogram")
         self.layoutWidget = QtWidgets.QWidget(self.ImageProcessingBox)
         self.layoutWidget.setGeometry(QtCore.QRect(10, 20, 611, 141))
@@ -55,6 +56,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.BlurationSlider.setObjectName("BlurationSlider")
         self.BrightBluarLayout.addWidget(self.BlurationBox, 0, 1, 1, 1)
         self.gridLayout.addLayout(self.BrightBluarLayout, 0, 0, 1, 1)
+
         self.GeoColorLayout = QtWidgets.QGridLayout()
         self.GeoColorLayout.setObjectName("GeoColorLayout")
         self.GeometricLayout = QtWidgets.QGridLayout()
@@ -66,11 +68,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.GeometricBox.setEnabled(True)
         self.GeometricBox.setCursor(QtGui.QCursor(QtCore.Qt.ClosedHandCursor))
         self.GeometricBox.setEditable(False)
+
+        GeometricList = ["Scalling", "Translation", "Rotation", "Perspective Transformation"]
+        self.GeometricBox.addItems(GeometricList)
         self.GeometricBox.setObjectName("GeometricBox")
-        self.GeometricBox.addItem("")
-        self.GeometricBox.addItem("")
-        self.GeometricBox.addItem("")
-        self.GeometricBox.addItem("")
+
         self.GeometricLayout.addWidget(self.GeometricBox, 0, 1, 1, 1)
         self.GeoColorLayout.addLayout(self.GeometricLayout, 0, 0, 1, 1)
         self.ColorLayout = QtWidgets.QGridLayout()
@@ -155,6 +157,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.FileMenu.addAction(self.menuFile.menuAction())
         self.FileMenu.addAction(self.menuHelp.menuAction())
 
+
+
         self.retranslateUi(MainWindow)
         self.BrightnessSlider.valueChanged['int'].connect(self.BrightValue) # type: ignore
         self.BlurationSlider.valueChanged['int'].connect(self.BlurValue) # type: ignore
@@ -162,6 +166,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionSave.triggered.connect(self.saveImage) # type: ignore
         self.actionSave_as.triggered.connect(self.saveAsImage) # type: ignore
         self.actionExit.triggered.connect(self.CloseApp) # type: ignore
+        self.GeometricBox.activated.connect(self.ActionGeometricBox)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         # variables for image location and info from img
@@ -169,7 +174,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.tmp = None
         self.brightness_val_now = 0
         self.blur_val_now = 0
-
 
     def loadImage(self):
         self.filename = QtWidgets.QFileDialog.getOpenFileName(filter = " (*.jpg *.png)")[0]
@@ -179,7 +183,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
     def setImage(self, image):
         self.tmp = image
-        image = imutils.resize(image, 621, 911)
+        image = imutils.resize(image, 600, 500)
         frame = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = QtGui.QImage(frame, frame.shape[1], frame.shape[0], frame.strides[0], QtGui.QImage.Format_RGB888)
         self.label.setPixmap(QtGui.QPixmap.fromImage(image))
@@ -224,11 +228,27 @@ class Ui_MainWindow(QtWidgets.QWidget):
         return image
 
     def UpdateImg(self):
-
         image = self.SetBrightValue(self.image, self.brightness_val_now)
         image = self.SetBlurValue(image, self.blur_val_now)
+
         self.setImage(image)
 
+    def ActionGeometricBox(self, index):
+
+        ctext = self.GeometricBox.itemText(index)
+        if ctext == "Scalling":
+            self.image = Scalling.ScaleImg(self, self.image, 2, 2, cv2.INTER_LINEAR)  # it will be with value_x / value_y
+            self.setImage(self.image)
+        elif ctext =="Translation":
+            self.image = Translation.MoveImg(self, self.image, -100, 200)  # it will be with value_x value_y
+            self.setImage(self.image)
+        elif ctext == "Rotation":
+            self.image = Rotation.RotateImg(self, self.image, 90, 1)
+            self.setImage(self.image)
+        else:
+            print("Perspective Transform")
+            self.image = PerspectiveTrans.GetPerspective(self, self.image)
+            self.setImage(self.image)
 
 
     def retranslateUi(self, MainWindow):
