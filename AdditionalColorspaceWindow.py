@@ -16,13 +16,13 @@ from PyQt5.QtWidgets import (
     QSlider,
 )
 
+
 class AdditionalWindow(QWidget):
     @abstractmethod
     def __init__(self):
         super(AdditionalWindow, self).__init__()
 
-
-        self.Mainlayout = QVBoxLayout()
+        self.MainLayout = QVBoxLayout()
         self.FirstLayout = QVBoxLayout()
         self.SecondLayout = QVBoxLayout()
         self.ThirdLayout = QVBoxLayout()
@@ -35,7 +35,6 @@ class AdditionalWindow(QWidget):
         self.FirstSlider.setSingleStep(1)
         self.FirstSlider.setCursor(QtGui.QCursor(QtCore.Qt.ClosedHandCursor))
 
-
         self.SecondSlider = QSlider()
         self.SecondSlider.setOrientation(QtCore.Qt.Horizontal)
         self.SecondSlider.setFocusPolicy(QtCore.Qt.StrongFocus)
@@ -43,7 +42,6 @@ class AdditionalWindow(QWidget):
         self.SecondSlider.setTickInterval(10)
         self.SecondSlider.setSingleStep(1)
         self.SecondSlider.setCursor(QtGui.QCursor(QtCore.Qt.ClosedHandCursor))
-
 
         self.ThirdSlider = QSlider()
         self.ThirdSlider.setOrientation(QtCore.Qt.Horizontal)
@@ -57,10 +55,10 @@ class AdditionalWindow(QWidget):
         self.SecondLabel = QLabel(" ")
         self.ThirdLabel = QLabel(" ")
 
-        self.setLayout(self.Mainlayout)
-        self.Mainlayout.addLayout(self.FirstLayout)
-        self.Mainlayout.addLayout(self.SecondLayout)
-        self.Mainlayout.addLayout(self.ThirdLayout)
+        self.setLayout(self.MainLayout)
+        self.MainLayout.addLayout(self.FirstLayout)
+        self.MainLayout.addLayout(self.SecondLayout)
+        self.MainLayout.addLayout(self.ThirdLayout)
 
         self.FirstLayout.addWidget(self.FirstLabel)
         self.FirstLayout.addWidget(self.FirstSlider)
@@ -100,7 +98,6 @@ class AdditionalWindow(QWidget):
         print("Value is: ", self.Value, "+++++", self.ChosenChannel)
         self.SetValue()
 
-
     @abstractmethod
     @QtCore.pyqtSlot(int)
     def SetValue(self):
@@ -137,6 +134,7 @@ class BGR_window(AdditionalWindow):
         self.ThirdLabel.setText("R value: ")
         self.ThirdSlider.setRange(0, 255)
 
+
 class RGB_window(AdditionalWindow):
 
     def __init__(self):
@@ -149,6 +147,7 @@ class RGB_window(AdditionalWindow):
         self.ThirdLabel.setText("B value: ")
         self.ThirdSlider.setRange(0, 255)
 
+
 class HSV_window(AdditionalWindow):
 
     def __init__(self):
@@ -159,4 +158,4 @@ class HSV_window(AdditionalWindow):
         self.SecondLabel.setText("S value: ")
         self.SecondSlider.setRange(0, 255)
         self.ThirdLabel.setText("V value: ")
-        self.ThirdSlider.setRange(0 , 255)
+        self.ThirdSlider.setRange(0, 255)
