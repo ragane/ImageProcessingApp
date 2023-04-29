@@ -11,8 +11,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import cv2, imutils
 
 from Transcription import *
-from FilteringMethods import *
-from FilteringMethods import Filters
 from AdditionalColorspaceWindow import HSV_window, RGB_window, BGR_window
 from LowPassFilterWindow import (
     Filter2D,
@@ -21,10 +19,16 @@ from LowPassFilterWindow import (
     MedianBlurring,
     BilateralFiltering,
 )
-from PyQt5 import *
+from HighPassFilterWindow import (
+    SobelFilter,
+    LaplacianFilter,
+    ScharrFilter,
+    CannyFilter,
+
+)
+
 
 class Ui_MainWindow(object):
-
 
     def __init__(self, *args):
         super().__init__()
@@ -59,6 +63,23 @@ class Ui_MainWindow(object):
         self.BilateralFilter = BilateralFiltering()
         self.BilateralFilter.setGeometry(QtCore.QRect(500, 200, 400, 200))
         self.BilateralFilter.setWindowTitle("Bilateral Filtering menu")
+
+        self.sobelfilter = SobelFilter()
+        self.sobelfilter.setGeometry(QtCore.QRect(500, 200, 400, 100))
+        self.sobelfilter.setWindowTitle("Sobel Filter")
+
+        self.scharrfilter = ScharrFilter()
+        self.scharrfilter.setGeometry(QtCore.QRect(500, 200, 250, 80))
+        self.scharrfilter.setWindowTitle("Scharr Filter")
+
+        self.laplacianfilter = LaplacianFilter()
+        self.laplacianfilter.setGeometry(QtCore.QRect(500, 200, 400, 100))
+        self.laplacianfilter.setWindowTitle("Laplacian Filter")
+
+        self.cannyfilter = CannyFilter()
+        self.cannyfilter.setGeometry(QtCore.QRect(500, 200, 600, 200))
+        self.cannyfilter.setWindowTitle("Canny Filter")
+
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -313,9 +334,9 @@ class Ui_MainWindow(object):
         self.GrayButton.clicked.connect(self.ChangeColorAction) # type: ignore
         # High-pass filtering buttons
         self.SobelButton.clicked.connect(self.HighPassAction) # type: ignore
-        self.ScharrButton.clicked.connect(self.ImgDispLabel.clear) # type: ignore
-        self.LaplaButton.clicked.connect(self.ImgDispLabel.clear) # type: ignore
-        self.CannyButton.clicked.connect(self.ImgDispLabel.clear) # type: ignore
+        self.ScharrButton.clicked.connect(self.HighPassAction) # type: ignore
+        self.LaplaButton.clicked.connect(self.HighPassAction) # type: ignore
+        self.CannyButton.clicked.connect(self.HighPassAction) # type: ignore
         # Thresholding buttons
         self.ToZeroInvButton.clicked.connect(self.ThreshTypesAction) # type: ignore
         self.TruncButton.clicked.connect(self.ThreshTypesAction) # type: ignore
@@ -333,6 +354,7 @@ class Ui_MainWindow(object):
         self.ColorType = 0 # variable for colorspace type
         self.loadimage = None
         self.LowPassButton = None
+        self.HighPassValue = 0
 
 
     ''' func used to load images selected by user and set it to label '''
@@ -348,8 +370,9 @@ class Ui_MainWindow(object):
         self.tmp = image
         image = imutils.resize(image, 600, 500)
         frame = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = QtGui.QImage(frame, frame.shape[1], frame.shape[0], frame.strides[0], QtGui.QImage.Format_RGB888)
-        self.ImgDispLabel.setPixmap(QtGui.QPixmap.fromImage(image))
+        if (frame is not None) and (image is not None):
+            image = QtGui.QImage(frame, frame.shape[1], frame.shape[0], frame.strides[0], QtGui.QImage.Format_RGB888)
+            self.ImgDispLabel.setPixmap(QtGui.QPixmap.fromImage(image))
 
     ''' func used to save processed image by menu '''
     def saveImage(self):
@@ -392,8 +415,8 @@ class Ui_MainWindow(object):
         self.UpdateImg()
 
     ''' func used to set brightness of image appropriate to value selected by user '''
-    def SetBrightValue(self, value):
-        image = cv2.convertScaleAbs(self.image, alpha = 0.5, beta = value)
+    def SetBrightValue(self):
+        image = cv2.convertScaleAbs(self.image, alpha = 0.5, beta = self.brightness_val_now)
         return image
 
     ''' func used to take value from ThreshSlider (0 - 255) '''
@@ -412,7 +435,7 @@ class Ui_MainWindow(object):
 
     ''' func used by brightness functions to update image '''
     def UpdateImg(self):
-        image = self.SetBrightValue(self.image, self.brightness_val_now)
+        image = self.SetBrightValue()
         self.setImage(image)
 
     ''' func used to set colorspace of image chosen by operator '''
@@ -508,16 +531,65 @@ class Ui_MainWindow(object):
             self.image = self.windowBGR.SetValue()
         self.setImage(self.image)
 
+    ''' func to update image with values from sliders, depends on the chosen high-pass filter '''
+    def UpdateHighPass(self):
+        if self.HighPassValue == 0:
+            image = self.sobelfilter.SetFilter()
+        elif self.HighPassValue == 1:
+            image = self.scharrfilter.getAxis()
+        elif self.HighPassValue == 2:
+            image = self.laplacianfilter.SetFilter()
+        elif self.HighPassValue == 3:
+            image = self.cannyfilter.SetFilter()
+        if image is not None:
+            image = QtGui.QImage(image, image.shape[1], image.shape[0],
+                                image.strides[0], QtGui.QImage.Format_Grayscale8)
+            self.ImgDispLabel.setPixmap(QtGui.QPixmap.fromImage(image))
+
     ''' func used to set high-pass filter of image chosen by operator '''
     def HighPassAction(self):
         if self.SobelButton.isChecked():
-            pass
+            if self.sobelfilter.isVisible():
+                self.sobelfilter.hide()
+            else:
+                self.sobelfilter.show()
+                self.sobelfilter.getImg(self.image)
+                self.sobelfilter.RadioButton_1.clicked.connect(self.sobelfilter.SetFilter)
+                self.sobelfilter.RadioButton_2.clicked.connect(self.sobelfilter.SetFilter)
+                self.sobelfilter.Slider_1.valueChanged['int'].connect(self.sobelfilter.getValue)
+                self.sobelfilter.Slider_1.valueChanged['int'].connect(self.UpdateHighPass)
+            self.HighPassValue = 0 # It is Sobel filter
         elif self.ScharrButton.isChecked():
-            pass
+            if self.scharrfilter.isVisible():
+                self.scharrfilter.hide()
+            else:
+                self.scharrfilter.show()
+                self.scharrfilter.getImg(self.image)
+                self.scharrfilter.RadioButton_1.clicked.connect(self.scharrfilter.getAxis)
+                self.scharrfilter.RadioButton_1.clicked.connect(self.UpdateHighPass)
+                self.scharrfilter.RadioButton_2.clicked.connect(self.scharrfilter.getAxis)
+                self.scharrfilter.RadioButton_2.clicked.connect(self.UpdateHighPass)
+            self.HighPassValue = 1 # It is Scharr filter
         elif self.LaplaButton.isChecked():
-            pass
+            if self.laplacianfilter.isVisible():
+                self.laplacianfilter.hide()
+            else:
+                self.laplacianfilter.show()
+                self.laplacianfilter.getImg(self.image)
+                self.laplacianfilter.Slider_1.valueChanged['int'].connect(self.laplacianfilter.getValue)
+                self.laplacianfilter.Slider_1.valueChanged['int'].connect(self.UpdateHighPass)
+            self.HighPassValue = 2  # It is Laplacian filter
         elif self.CannyButton.isChecked():
-            pass
+            if self.cannyfilter.isVisible():
+                self.cannyfilter.hide()
+            else:
+                self.cannyfilter.show()
+                self.cannyfilter.getImg(self.image)
+                self.cannyfilter.Slider_1.valueChanged['int'].connect(self.cannyfilter.FirstGetValue)
+                self.cannyfilter.Slider_1.valueChanged['int'].connect(self.UpdateHighPass)
+                self.cannyfilter.Slider_2.valueChanged['int'].connect(self.cannyfilter.SecondGetValue)
+                self.cannyfilter.Slider_2.valueChanged['int'].connect(self.UpdateHighPass)
+            self.HighPassValue = 3 # It is Canny filter
 
     ''' func to update image with values from sliders, depends on the chosen low-pass filter '''
     def UpdateLowPass(self):
