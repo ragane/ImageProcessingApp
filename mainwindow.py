@@ -24,62 +24,93 @@ from HighPassFilterWindow import (
     LaplacianFilter,
     ScharrFilter,
     CannyFilter,
-
+)
+from MorphoTransformWindow import (
+    ErosionTransform,
+    DilationTransform,
+    OpeningTransform,
+    ClosingTransform,
+    GradientTransform,
 )
 
+
+# TODO!!!
+# TODO After each transformation set self.Colortype in order to have opportunity to work with many transformations
+# in one time
 
 class Ui_MainWindow(object):
 
     def __init__(self, *args):
         super().__init__()
+
         self.windowHSV = HSV_window()
-        self.windowHSV.setGeometry(QtCore.QRect(500, 200, 400, 200))
-        self.windowHSV.setWindowTitle("HSV menu")
+        self.windowHSV.setWindowTitle("HSV Colorspace")
 
         self.windowRGB = RGB_window()
-        self.windowRGB.setGeometry(QtCore.QRect(500, 200, 400, 200))
-        self.windowRGB.setWindowTitle("RGB menu")
+        self.windowRGB.setWindowTitle("RGB Colorspace")
 
         self.windowBGR = BGR_window()
-        self.windowBGR.setGeometry(QtCore.QRect(500, 200, 400, 200))
-        self.windowBGR.setWindowTitle("BGR menu")
+        self.windowBGR.setWindowTitle("BGR Colorspace")
+
+        ColorspaceTab = [self.windowHSV, self.windowBGR, self.windowRGB]
+        for i in ColorspaceTab:
+            i.setGeometry(QtCore.QRect(500, 200, 400, 200))
 
         self._2DFilter = Filter2D()
-        self._2DFilter.setGeometry(QtCore.QRect(500, 200, 400, 200))
         self._2DFilter.setWindowTitle("2D Filter menu")
 
         self.ImgSmoothing = ImageBlurring()
-        self.ImgSmoothing.setGeometry(QtCore.QRect(500, 200, 400, 200))
         self.ImgSmoothing.setWindowTitle("Image Blurring menu")
 
         self.GaussBlur = GaussBlurring()
-        self.GaussBlur.setGeometry(QtCore.QRect(500, 200, 400, 200))
         self.GaussBlur.setWindowTitle("Gaussian Blurring menu")
 
         self.MedBlur = MedianBlurring()
-        self.MedBlur.setGeometry(QtCore.QRect(500, 200, 400, 200))
         self.MedBlur.setWindowTitle("Median Blurring menu")
 
         self.BilateralFilter = BilateralFiltering()
-        self.BilateralFilter.setGeometry(QtCore.QRect(500, 200, 400, 200))
         self.BilateralFilter.setWindowTitle("Bilateral Filtering menu")
 
         self.sobelfilter = SobelFilter()
-        self.sobelfilter.setGeometry(QtCore.QRect(500, 200, 400, 100))
         self.sobelfilter.setWindowTitle("Sobel Filter")
 
         self.scharrfilter = ScharrFilter()
-        self.scharrfilter.setGeometry(QtCore.QRect(500, 200, 250, 80))
         self.scharrfilter.setWindowTitle("Scharr Filter")
 
         self.laplacianfilter = LaplacianFilter()
-        self.laplacianfilter.setGeometry(QtCore.QRect(500, 200, 400, 100))
         self.laplacianfilter.setWindowTitle("Laplacian Filter")
 
         self.cannyfilter = CannyFilter()
-        self.cannyfilter.setGeometry(QtCore.QRect(500, 200, 600, 200))
         self.cannyfilter.setWindowTitle("Canny Filter")
 
+        self.erosion = ErosionTransform()
+        self.erosion.setWindowTitle("Erosion transformation")
+
+        self.dilation = DilationTransform()
+        self.dilation.setWindowTitle("Dilation transformation")
+
+        self.opening = OpeningTransform()
+        self.opening.setWindowTitle("Opening transformation")
+
+        self.closing = ClosingTransform()
+        self.closing.setWindowTitle("Closing transformation")
+
+        self.gradient = GradientTransform()
+        self.gradient.setWindowTitle("Gradient transformation")
+
+        FiltersTab = [self._2DFilter, self.ImgSmoothing, self.GaussBlur, self.MedBlur, self.BilateralFilter,
+                      self.sobelfilter, self.scharrfilter, self.laplacianfilter, self.cannyfilter,
+                      self.erosion, self.dilation, self.opening, self.closing, self.gradient]
+
+        for i in FiltersTab:
+            if i == self.sobelfilter:
+                i.setGeometry(QtCore.QRect(500, 200, 400, 120))
+            elif i == self.scharrfilter:
+                i.setGeometry(QtCore.QRect(500, 200, 250, 80))
+            elif i == self.laplacianfilter:
+                i.setGeometry(QtCore.QRect(500, 200, 400, 90))
+            else:
+                i.setGeometry(QtCore.QRect(500, 200, 400, 200))
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -107,9 +138,6 @@ class Ui_MainWindow(object):
         self.ColorFiltersGeoMorpLayout.setObjectName("ColorFiltersGeoMorpLayout")
         self.ColorFiltersLayout = QtWidgets.QGridLayout()
         self.ColorFiltersLayout.setObjectName("ColorFiltersLayout")
-
-        #TODO self.addToolBox(NavigationToolBar(self.widgetDisplay.canvas, self))
-
         self.ColorBox = QtWidgets.QGroupBox(self.layoutWidget)
         self.ColorBox.setObjectName("ColorBox")
         self.gridLayout_9 = QtWidgets.QGridLayout(self.ColorBox)
@@ -184,10 +212,9 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.layoutWidget)
         self.comboBox.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
+
+        TransformList = ["Erosion", "Dilation", "Opening", "Closing", "Gradient"]
+        self.comboBox.addItems(TransformList)
         self.MorphoLayout.addWidget(self.comboBox, 0, 1, 1, 1)
         self.TransforLayout.addLayout(self.MorphoLayout)
         self.GeoLayout = QtWidgets.QGridLayout()
@@ -315,6 +342,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.GeometricBox.activated.connect(self.ActionGeoBox)
+        self.comboBox.activated.connect(self.ActionTransformBox)
         self.BrightnessSlider.valueChanged['int'].connect(self.BrightValue) # type: ignore
         # Menu File buttons
         self.actionOpen.triggered.connect(self.loadImage) # type: ignore
@@ -355,6 +383,7 @@ class Ui_MainWindow(object):
         self.loadimage = None
         self.LowPassButton = None
         self.HighPassValue = 0
+        self.TransformNum = 0
 
 
     ''' func used to load images selected by user and set it to label '''
@@ -392,7 +421,7 @@ class Ui_MainWindow(object):
 
     ''' func used to select and use proper geometric transformations on processed image '''
     def ActionGeoBox(self, index):
-
+        #TODO prepare additional windows for set proper values!
         ctext = self.GeometricBox.itemText(index) # get proper transformation
         if ctext == "Scalling":
             self.image = Scalling.ScaleImg(self, self.image, 2, 2, cv2.INTER_LINEAR)  #TODO add value_x and value_y of Scalling
@@ -408,6 +437,68 @@ class Ui_MainWindow(object):
             self.image = PerspectiveTrans.GetPerspective(self, self.image)
             self.setImage(self.image)
 
+    def ActionTransformBox(self, index):
+        indexText = self.comboBox.itemText(index)
+        if indexText == "Erosion":
+            if self.erosion.isVisible():
+                self.erosion.hide()
+            else:
+                self.erosion.show()
+                self.erosion.getImage(self.image)
+                self.erosion.KernelSlider.valueChanged['int'].connect(self.erosion.getKernelSize)
+                self.erosion.IterationSlider.valueChanged['int'].connect(self.erosion.getIteration)
+                self.erosion.ApplyButton.clicked.connect(self.UpdateTransform)
+            self.TransformNum = 0
+        elif indexText == "Dilation":
+            if self.dilation.isVisible():
+                self.dilation.hide()
+            else:
+                self.dilation.show()
+                self.dilation.getImage(self.image)
+                self.dilation.KernelSlider.valueChanged['int'].connect(self.dilation.getKernelSize)
+                self.dilation.IterationSlider.valueChanged['int'].connect(self.dilation.getIteration)
+                self.dilation.ApplyButton.clicked.connect(self.UpdateTransform)
+            self.TransformNum = 1
+        elif indexText == "Opening":
+            if self.opening.isVisible():
+                self.opening.hide()
+            else:
+                self.opening.show()
+                self.opening.getImage(self.image)
+                self.opening.KernelSlider.valueChanged['int'].connect(self.opening.getKernelSize)
+                self.opening.ApplyButton.clicked.connect(self.UpdateTransform)
+            self.TransformNum = 2
+        elif indexText == "Closing":
+            if self.closing.isVisible():
+                self.closing.hide()
+            else:
+                self.closing.show()
+                self.closing.getImage(self.image)
+                self.closing.KernelSlider.valueChanged['int'].connect(self.closing.getKernelSize)
+                self.closing.ApplyButton.clicked.connect(self.UpdateTransform)
+            self.TransformNum = 3
+        elif indexText == "Gradient":
+            if self.gradient.isVisible():
+                self.gradient.hide()
+            else:
+                self.gradient.show()
+                self.gradient.getImage(self.image)
+                self.gradient.KernelSlider.valueChanged['int'].connect(self.gradient.getKernelSize)
+                self.gradient.ApplyButton.clicked.connect(self.UpdateTransform)
+            self.TransformNum = 4
+
+    def UpdateTransform(self):
+        if self.TransformNum == 0:
+            self.image = self.erosion.SetValue()
+        elif self.TransformNum == 1:
+            self.image = self.dilation.SetValue()
+        elif self.TransformNum == 2:
+            self.image = self.opening.SetValue()
+        elif self.TransformNum == 3:
+            self.image = self.closing.SetValue()
+        elif self.TransformNum == 4:
+            self.image = self.gradient.SetValue()
+        self.setImage(self.image)
     ''' func used to take value from BrightnessSlider (1 - 255) '''
     def BrightValue(self, value):
         self.brightness_val_now = value
