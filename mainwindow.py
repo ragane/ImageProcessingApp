@@ -451,14 +451,14 @@ class Ui_MainWindow(object):
     def saveImage(self):
         cv2.imwrite(self.filename, self.image)
         print("Saved: ", self.filename)
-        self.statusbar.showMessage("Saving image: %" %(self.saveName))
+        self.statusbar.showMessage(f"Saving image: {self.filename}")
 
     ''' func used to save processed image with name and location selected by user by menu '''
     def saveAsImage(self):
         self.saveName = QtWidgets.QFileDialog.getSaveFileName(MainWindow, "Save file", self.filename, "(*.jpg *.png)")[0]
         cv2.imwrite(self.saveName, self.image)
         print("Saved as: ", self.saveName)
-        self.statusbar.showMessage("Saving image: %" %(self.saveName))
+        self.statusbar.showMessage(f"Saving image: {self.saveName}")
 
     ''' func used to close app by menu '''
     def CloseApp(self):
@@ -687,6 +687,7 @@ class Ui_MainWindow(object):
     def UpdateColorspace(self):
         if self.ColorType == 0:
             self.image = self.windowRGB.SetValue()
+
         if self.ColorType == 1:
             self.image = self.windowHSV.SetValue()
         elif self.ColorType == 3:
@@ -871,7 +872,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Image Processing Application"))
         self.ImageProcessingBox.setTitle(_translate("MainWindow", "Image Processing"))
         self.ColorBox.setTitle(_translate("MainWindow", "Colorspace"))
         self.BgrButton.setText(_translate("MainWindow", "BGR"))
@@ -908,13 +909,13 @@ class Ui_MainWindow(object):
         self.BinaryInvButton.setText(_translate("MainWindow", "Binary inv"))
         self.ToZeroButton.setText(_translate("MainWindow", "To zero"))
         self.BrightnessBox.setTitle(_translate("MainWindow", "Brightness"))
-        self.menuFile.setTitle(_translate("MainWindow", "File"))
+        self.menuFile.setTitle(_translate("MainWindow", "&File"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
-        self.actionOpen.setText(_translate("MainWindow", "Open..."))
+        self.actionOpen.setText(_translate("MainWindow", "&Open..."))
         self.actionOpen.setShortcut(_translate("MainWindow", "Ctrl+N"))
         self.actionSave.setText(_translate("MainWindow", "Save"))
         self.actionSave.setShortcut(_translate("MainWindow", "Ctrl+S"))
-        self.actionSave_as.setText(_translate("MainWindow", "Save as..."))
+        self.actionSave_as.setText(_translate("MainWindow", "&Save as..."))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
         self.actionExit.setShortcut(_translate("MainWindow", "Ctrl+Q"))
         self.actionColor.setText(_translate("MainWindow", "Color"))
