@@ -437,7 +437,7 @@ class Ui_MainWindow(object):
         self.image = cv2.imread(self.filename)
         if self.image is not None:
             self.setImage(self.image)
-            self.statusbar.showMessage("Loaded image: %" %(self.filename))
+            self.statusbar.showMessage(f"Loaded image: {self.filename}")
 
 
     ''' func used to resize selected images and convert them to QImage '''
