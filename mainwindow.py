@@ -17,6 +17,11 @@ from DisplayHistogram import Histogram
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
 from Transcription import *
+from GeometricTransformClass import (
+    Scaling,
+    Translation,
+    Rotation,
+)
 from AdditionalColorspaceWindow import HSV_window, RGB_window, BGR_window
 from LowPassFilterWindow import (
     Filter2D,
@@ -42,7 +47,7 @@ from MorphoTransformWindow import (
 
 class Ui_MainWindow(object):
 
-    def __init__(self, *args):
+    def __init__(self):
         super().__init__()
 
         self.windowHSV = HSV_window()
@@ -102,9 +107,17 @@ class Ui_MainWindow(object):
 
         self.HistogramDisplay = Histogram()
 
+        self.GeoScaling = Scaling()
+        self.GeoScaling.setWindowTitle("Scaling transformation")
+        self.GeoTranslation = Translation()
+        self.GeoTranslation.setWindowTitle("Translation transformation")
+        self.GeoRotation = Rotation()
+        self.GeoRotation.setWindowTitle("Rotation transformation")
+
         FiltersTab = [self._2DFilter, self.ImgSmoothing, self.GaussBlur, self.MedBlur, self.BilateralFilter,
                       self.sobelfilter, self.scharrfilter, self.laplacianfilter, self.cannyfilter,
-                      self.erosion, self.dilation, self.opening, self.closing, self.gradient]
+                      self.erosion, self.dilation, self.opening, self.closing, self.gradient, self.GeoScaling,
+                      self.GeoTranslation, self.GeoRotation]
 
         for i in FiltersTab:
             if i == self.sobelfilter:
@@ -184,7 +197,6 @@ class Ui_MainWindow(object):
         self.ColorFiltersLayout.addWidget(self.HighPassBox, 0, 1, 1, 1)
         self.LowPassBox = QtWidgets.QGroupBox(self.layoutWidget)
         self.LowPassBox.setObjectName("LowPassBox")
-        #self.LowPassBox.setGeometry(QtCore.QRect(10, 10, 300, 300))
         self.gridLayout_4 = QtWidgets.QGridLayout(self.LowPassBox)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.LowPassLayout = QtWidgets.QVBoxLayout()
@@ -219,6 +231,7 @@ class Ui_MainWindow(object):
         self.comboBox.setObjectName("comboBox")
 
         TransformList = ["Erosion", "Dilation", "Opening", "Closing", "Gradient"]
+
         self.comboBox.addItems(TransformList)
         self.MorphoLayout.addWidget(self.comboBox, 0, 1, 1, 1)
         self.TransforLayout.addLayout(self.MorphoLayout)
@@ -232,7 +245,7 @@ class Ui_MainWindow(object):
         self.GeometricBox.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.GeometricBox.setEditable(False)
 
-        GeoList = ["Scalling", "Translation", "Rotation", "Perspective Transformation"]
+        GeoList = ["Scaling", "Translation", "Rotation"]
 
         self.GeometricBox.addItems(GeoList)
         self.GeometricBox.setObjectName("GeoBox")
@@ -275,7 +288,6 @@ class Ui_MainWindow(object):
         self.ColorFiltersGeoMorpLayoutThreshLayout.addWidget(self.ThreshBox, 0, 1, 1, 1)
         self.ImgProcessMenuLayout.addLayout(self.ColorFiltersGeoMorpLayoutThreshLayout, 0, 0, 1, 1)
 
-
         self.BrightnessLayout = QtWidgets.QGridLayout()
         self.BrightnessLayout.setObjectName("BrightnessLayout")
         self.BrightnessBox = QtWidgets.QGroupBox(self.layoutWidget)
@@ -302,11 +314,6 @@ class Ui_MainWindow(object):
         self.pbImage.setGeometry(QtCore.QRect(455, 255, 185, 50))
         self.pbImage.setText(" Load histogram ")
         self.ImgProcessMenuLayout.addWidget(self.HistogramDisplay, 2, 0, 1, 1)
-
-
-
-
-
 
         self.FileMenu = QtWidgets.QMenuBar(MainWindow)
         self.FileMenu.setGeometry(QtCore.QRect(0, 0, 1300, 21))
@@ -351,6 +358,7 @@ class Ui_MainWindow(object):
         self.actionSobel.setObjectName("actionSobel")
         self.actionCanny = QtWidgets.QAction(MainWindow)
         self.actionCanny.setObjectName("actionCanny")
+
         # Add action to menu
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -396,22 +404,22 @@ class Ui_MainWindow(object):
         # variables for image location and info from img
         self.filename = None
 
-        self.brightness_val_now = 0
-        self.thresh_val_now = 0
-        self.thresh_type = None
+        self.brightness_val_now = 0 # variable for current brightness value
+        self.thresh_val_now = 0 # variable for current thresholding value
+        self.thresh_type = None # variable for type of thresholding
         self.ColorType = 0 # variable for colorspace type
-        self.loadimage = None
-        self.LowPassButton = None
-        self.HighPassValue = 0
-        self.TransformNum = 0
+        self.LowPassButton = None # variable for type of low-pass filter
+        self.HighPassValue = 0 # variable for type of high-pass filter
+        self.TransformNum = 0 # variable for type of morpho transformations
+        self.GeoNum = 0 # variable for type of geometric transformations
 
+    ''' func used to display histogram of img in RGB and gray scale '''
     def display_histogram(self):
 
         self.HistogramDisplay.canvas.sumbu1.clear()
         if self.ColorType != 2:
             color = ('b', 'g', 'r')
             for i, col in enumerate(color):
-                #TODO prepare histogram for grayscale images
                 histo = cv2.calcHist([self.image], [i], None, [256], [0, 256])
                 self.HistogramDisplay.canvas.sumbu1.plot(histo, color=col, linewidth=2.0)
                 self.HistogramDisplay.canvas.sumbu1.set_ylabel('Y', color='blue')
@@ -430,6 +438,7 @@ class Ui_MainWindow(object):
                     self.HistogramDisplay.canvas.sumbu1.set_facecolor('xkcd:wheat')
                     self.HistogramDisplay.canvas.sumbu1.grid(True)
         self.HistogramDisplay.canvas.draw()
+        self.statusbar.showMessage(f"Creating histogram of {self.filename}")
 
     ''' func used to load images selected by user and set it to label '''
     def loadImage(self):
@@ -466,31 +475,58 @@ class Ui_MainWindow(object):
         self.statusbar.showMessage("Closing application...")
         app.quit()
 
+    ''' func used to update image depends of chosen geometric transformations and its values '''
+    def UpdateGeoTransform(self):
+        if self.GeoNum == 0:
+            self.image = self.GeoScaling.SetValue()
+        elif self.GeoNum == 1:
+            self.image = self.GeoTranslation.SetValue()
+        elif self.GeoNum == 2:
+            self.image = self.GeoRotation.SetValue()
+        self.setImage(self.image)
+
     ''' func used to select and use proper geometric transformations on processed image '''
     def ActionGeoBox(self, index):
-        #TODO prepare additional windows for set proper values!
         ctext = self.GeometricBox.itemText(index) # get proper transformation
-        if ctext == "Scalling":
-            self.image = Scalling.ScaleImg(self, self.image, 2, 2, cv2.INTER_LINEAR)  #TODO add value_x and value_y of Scalling
-            self.setImage(self.image)
-            self.statusbar.showMessage("Scalling transformation of image...")
+        if ctext == "Scaling":
+            if self.GeoScaling.isVisible():
+                self.GeoScaling.hide()
+            else:
+                self.GeoScaling.show()
+                self.GeoScaling.GetImg(self.image)
+                self.GeoScaling.FirstSpinBox.valueChanged.connect(self.GeoScaling.GetFirstValue)
+                self.GeoScaling.SecondSpinBox.valueChanged.connect(self.GeoScaling.GetSecondValue)
+                self.GeoScaling.ApplyButton.clicked.connect(self.UpdateGeoTransform)
+                self.statusbar.showMessage("Scaling transformation of image...")
+            self.GeoNum = 0
+
         elif ctext =="Translation":
-            self.image = Translation.MoveImg(self, self.image, -100, 200)  #TODO add value_x and value_y of moving
-            self.setImage(self.image)
-            self.statusbar.showMessage("Translation transformation of image...")
+            if self.GeoTranslation.isVisible():
+                self.GeoTranslation.hide()
+            else:
+                self.GeoTranslation.show()
+                self.GeoTranslation.GetImg(self.image)
+                self.GeoTranslation.FirstSpinBox.valueChanged.connect(self.GeoTranslation.GetFirstValue)
+                self.GeoTranslation.SecondSpinBox.valueChanged.connect(self.GeoTranslation.GetSecondValue)
+                self.GeoTranslation.ApplyButton.clicked.connect(self.UpdateGeoTransform)
+                self.statusbar.showMessage("Translation transformation of image...")
+            self.GeoNum = 1
 
         elif ctext == "Rotation":
-            self.image = Rotation.RotateImg(self, self.image, 90, 1) #TODO add value of selected angle
-            self.setImage(self.image)
-            self.statusbar.showMessage("Rotation transformation of image...")
+            if self.GeoRotation.isVisible():
+                self.GeoRotation.hide()
+            else:
+                self.GeoRotation.show()
+                self.GeoRotation.GetImg(self.image)
+                self.GeoRotation.FirstSpinBox.valueChanged.connect(self.GeoRotation.GetFirstValue)
+                self.GeoRotation.SecondSpinBox.valueChanged.connect(self.GeoRotation.GetSecondValue)
+                self.GeoRotation.ApplyButton.clicked.connect(self.UpdateGeoTransform)
+                self.statusbar.showMessage("Rotation transformation of image...")
+            self.GeoNum = 2
 
-        else:
-            print("Perspective Transform")
-            self.image = PerspectiveTrans.GetPerspective(self, self.image)
-            self.setImage(self.image)
-            self.statusbar.showMessage("Perspective transformation of image...")
         self.ColorType = 0 # image in RGB scale
 
+    ''' func used to select and use proper morphological transformations on processed image '''
     def ActionTransformBox(self, index):
         indexText = self.comboBox.itemText(index)
         if indexText == "Erosion":
@@ -550,6 +586,7 @@ class Ui_MainWindow(object):
             self.TransformNum = 4
             self.statusbar.showMessage("Gradient transformation of image...")
 
+    ''' func used to update image depends of chosen morphological transformations and its values '''
     def UpdateTransform(self):
         if self.TransformNum == 0:
             self.image = self.erosion.SetValue()
@@ -896,11 +933,10 @@ class Ui_MainWindow(object):
         self.comboBox.setItemText(2, _translate("MainWindow", "Opening"))
         self.comboBox.setItemText(3, _translate("MainWindow", "Closing"))
         self.GeoLabel.setText(_translate("MainWindow", "Geometric transformation"))
-        self.GeometricBox.setCurrentText(_translate("MainWindow", "Scalling"))
-        self.GeometricBox.setItemText(0, _translate("MainWindow", "Scalling"))
+        self.GeometricBox.setCurrentText(_translate("MainWindow", "Scaling"))
+        self.GeometricBox.setItemText(0, _translate("MainWindow", "Scaling"))
         self.GeometricBox.setItemText(1, _translate("MainWindow", "Translation"))
         self.GeometricBox.setItemText(2, _translate("MainWindow", "Rotation"))
-        self.GeometricBox.setItemText(3, _translate("MainWindow", "Perspective transformation"))
         self.ThreshBox.setTitle(_translate("MainWindow", "Thresholding"))
         self.ThreshTypeBox.setTitle(_translate("MainWindow", "Thresholding types:"))
         self.ToZeroInvButton.setText(_translate("MainWindow", "To zero inv"))
