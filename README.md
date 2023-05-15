@@ -3,14 +3,14 @@
 This is a desktop application for image processing using the OpenCV package. The most important advantage of the application is the ease of use, the ability to immediately visualize the changes made to the image. The user also has the option of adjusting the parameters of each image processing method. In addition, the user can simultaneously visualize the histogram of the processed image in RGB and gray scale. The project can be used to familiarize yourself with image processing methods using the OpenCV package and to process various types of images according to your preferences.
 
 ### Contents
-1. [Colorspace](https://github.com/ragane/ImageProcessingApp/edit/master/README.md?plain=1)
-2. Low-pass filters
-3. High-pass filters
-4. Thresholding
-5. Morphological Transformation
-6. Geometric Transformation
-7. Brightness
-8. Histogram
+1. [Colorspace](https://github.com/ragane/ImageProcessingApp/blob/master/README.md?plain=1#L28)
+2. [Low-pass filters](https://github.com/ragane/ImageProcessingApp/blob/master/README.md?plain=1#L40)
+3. [High-pass filters](https://github.com/ragane/ImageProcessingApp/blob/master/README.md?plain=1#L112)
+4. [Thresholding](https://github.com/ragane/ImageProcessingApp/blob/master/README.md?plain=1#L181)
+5. [Morphological Transformation](https://github.com/ragane/ImageProcessingApp/blob/master/README.md?plain=1#L216)
+6. [Geometric Transformation](https://github.com/ragane/ImageProcessingApp/blob/master/README.md?plain=1#L283)
+7. [Brightness](https://github.com/ragane/ImageProcessingApp/blob/master/README.md?plain=1#L314)
+8. [Histogram](https://github.com/ragane/ImageProcessingApp/blob/master/README.md?plain=1#L322)
 
 
 ### Libraries & Dependencies:
