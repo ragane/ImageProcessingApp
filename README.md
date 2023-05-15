@@ -3,7 +3,7 @@
 This is a desktop application for image processing using the OpenCV package. The most important advantage of the application is the ease of use, the ability to immediately visualize the changes made to the image. The user also has the option of adjusting the parameters of each image processing method. In addition, the user can simultaneously visualize the histogram of the processed image in RGB and gray scale. The project can be used to familiarize yourself with image processing methods using the OpenCV package and to process various types of images according to your preferences.
 
 ### Contents
-1. Colorspace
+1. [Colorspace](https://github.com/ragane/ImageProcessingApp/edit/master/README.md?plain=1)
 2. Low-pass filters
 3. High-pass filters
 4. Thresholding
@@ -281,16 +281,61 @@ Morphological gradient is done by the OpenCV function <i>cv.cv.morphologyEx()</i
 </pre>
 
 ### 6. Geometric transformations
+<pre>
+<b>Scaling</b>
+Scaling is just resizing of the image. Different interpolation methods are used.
+Preferable interpolation methods are cv.INTER_AREA for shrinking and cv.INTER_CUBIC (slow) & cv.INTER_LINEAR for zooming.
+The user can adjust the size of the image in the additional window.
 
+The effect of scaling image is presented below.
+<img src="https://github.com/ragane/ImageProcessingApp/assets/62072813/91b96204-5d0f-4d3d-849b-f3afc43d29de" width=50% height=50%> <img src="https://github.com/ragane/ImageProcessingApp/assets/62072813/1a4e6109-51f0-4ae9-8dc7-bcde7102884e" width=50% height=20%>
+
+
+<b>Translation</b>
+Translation is the shifting of object's location. If you know the shift in (x,y) direction
+The user can adjust the size of the shift (x, y) in the additional window.
+
+The effect of translation image is presented below.
+<img src="https://github.com/ragane/ImageProcessingApp/assets/62072813/4a1e8b82-739a-4fdd-9f1b-d7a7e6799d16" width=50% height=50%>
+
+
+<b>Rotation</b>
+Rotation of an image for an angle θ is achieved by the transformation matrix.
+OpenCV provides scaled rotation with adjustable center of rotation so that you can rotate at any location you prefer.
+The user can adjust the size of rotation in additional window.
+
+The effect of rotate image is presented below.
+<img src="https://github.com/ragane/ImageProcessingApp/assets/62072813/7291c8ea-478d-4d81-9f71-b4db2211dec2" width=50% height=50%>
+
+
+</pre>
 
 
 ### 7. Brightness
+<pre>
+In order to change the image, we use the OpenCV package function convertScaleAbs().
+Changes in the brightness value can be adjusted by the user using the slider in the range of [-127, 127].
 
-
-
+The effect of changing brightness of image is presented below.
+<img src="https://github.com/ragane/ImageProcessingApp/assets/62072813/6750324b-91c9-4837-a535-3ca840edaaa0" width=50% height=50%>
+</pre>
 ### 8. Histogram
+<pre>
+Histogram is a graph or plot, which gives you an overall idea about the intensity distribution of an image.
+It is a plot with pixel values (ranging from 0 to 255)
+in X-axis and corresponding number of pixels in the image on Y-axis.
 
+It is used to better understand the image.
+By looking at the histogram of an image, you get intuition about contrast, brightness,
+intensity distribution etc of that image. 
+In the interface, the user can get a histogram of the color image,
+each of the colors in the RGB scale is reflected by its color.
+In addition, it can visualize the histogram of the image in grayscale.
 
+The histograms are shown below. RGB on the left, grayscale on the right.
+<img src="https://github.com/ragane/ImageProcessingApp/assets/62072813/f4163102-b571-4430-a222-b7f146d104ce" width=50% height=50%> <img src="https://github.com/ragane/ImageProcessingApp/assets/62072813/ec71f461-8cbb-4603-b04b-60bd27960fa4" width=50% height=50%>
+
+</pre>
 
 ### Resources
 
